@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="EDGE is the AI marketing operating system for faster campaign execution." />
+  <title>EDGE — AI Marketing OS</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style type="text/tailwindcss">
+    :root {
+      --font-heading: 'Outfit', sans-serif;
+      --font-sans: 'Inter', sans-serif;
+      --background: #0b0d10;
+      --foreground: #f3f4f6;
+      --card: #14171d;
+      --border: #242933;
+      --primary: #d1ff19;
+    }
+    
+    html {
+      font-family: var(--font-sans);
+      background: #0b0d10;
+      color: #f3f4f6;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-width: 320px;
+      margin: 0;
+    }
+
+    button, a {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .edge-app {
+      background-image: radial-gradient(circle at 88% 4%, rgba(209,255,25,.045), transparent 22rem), radial-gradient(circle at 4% 46%, rgba(48,69,97,.08), transparent 28rem);
+    }
+
+    .font-heading {
+      font-family: var(--font-heading);
+    }
+
+    .edge-card {
+      border: 1px solid #242933;
+      border-radius: 1rem;
+      background: #14171d;
+      padding: 1.5rem;
+      box-shadow: 0 12px 40px rgba(0,0,0,.12);
+    }
+
+    .section-kicker {
+      color: #6b7280;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .19em;
+      text-transform: uppercase;
+    }
+
+    .nav-link, .nav-link-active {
+      position: relative;
+      transition: color .2s ease;
+      cursor: pointer;
+    }
+    .nav-link:hover { color: #f3f4f6; }
+    .nav-link-active { color: #f3f4f6; }
+    .nav-link-active::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -21px;
+      height: 2px;
+      border-radius: 99px;
+      background: #d1ff19;
+      box-shadow: 0 0 10px rgba(209,255,25,.8);
+    }
+
+    .next-action-card {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      border: 1px solid #57611f;
+      border-radius: 1rem;
+      background: linear-gradient(100deg, rgba(209,255,25,.10), rgba(20,23,29,.95) 47%);
+      padding: 1.25rem 1.5rem;
+      box-shadow: inset 0 1px rgba(255,255,255,.035);
+    }
+
+    .service-icon {
+      display: grid;
+      height: 2.75rem;
+      width: 2.75rem;
+      place-items: center;
+      border-radius: .75rem;
+    }
+    .service-icon-lime { color: #d1ff19; background: rgba(209,255,25,.1); }
+    .service-icon-blue { color: #83b5ff; background: rgba(97,154,255,.12); }
+    .service-icon-orange { color: #f5b766; background: rgba(245,183,102,.1); }
+
+    .status-pill, .plan-badge {
+      border-radius: 999px;
+      padding: .35rem .55rem;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .status-progress { color: #d1ff19; background: rgba(209,255,25,.1); }
+    .status-complete { color: #64dba1; background: rgba(16,185,129,.1); }
+    .status-ready { color: #f5b766; background: rgba(245,183,102,.1); }
+
+    .modal-panel {
+      border: 1px solid #303641;
+      border-radius: 1.5rem;
+      background: #14171d;
+      padding: 1.5rem;
+      box-shadow: 0 24px 100px rgba(0,0,0,.6);
+    }
+
+    .plan-option {
+      position: relative;
+      border: 1px solid #303641;
+      border-radius: 1rem;
+      background: #101318;
+      padding: 1.25rem;
+      text-align: left;
+      cursor: pointer;
+      width: 100%;
+      transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease;
+    }
+    .plan-option:hover { border-color: #68732c; transform: translateY(-2px); }
+    .plan-option-selected { border-color: #d1ff19; box-shadow: 0 0 0 1px #d1ff19, 0 0 28px rgba(209,255,25,.1); }
+    
+    .plan-badge { background: #242933; color: #8f96a3; }
+    .plan-badge-lime { background: rgba(209,255,25,.13); color: #d1ff19; }
+
+    .plan-radio {
+      position: absolute;
+      top: 1.25rem;
+      right: 1.25rem;
+      display: grid;
+      height: 1.1rem;
+      width: 1.1rem;
+      place-items: center;
+      border: 1px solid #586170;
+      border-radius: 50%;
+    }
+    .plan-radio-selected { border-color: #d1ff19; }
+    .plan-radio-selected span { height: .5rem; width: .5rem; border-radius: 50%; background: #d1ff19; }
+
+    @media (max-width: 639px) {
+      .next-action-card { align-items: flex-start; padding: 1rem; }
+      .edge-card { padding: 1.25rem; }
+      .modal-panel { padding: 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/javascript">
+    const { useState, useEffect } = React;
+
+    const plans = [
+      {
+        id: "growth-pro",
+        name: "Growth Pro",
+        price: "₹2,000",
+        period: "per month",
+        credits: "10,000 AI Credits / mo",
+        capacity: 10000,
+        badge: "Current plan",
+        description: "For ambitious teams building repeatable growth systems.",
+        features: ["Up to 5 team seats", "Standard priority generation", "Multi-channel templates", "Basic performance analytics"],
+      },
+      {
+        id: "enterprise-scale",
+        name: "Enterprise Scale",
+        price: "₹5,000",
+        period: "per month",
+        credits: "50,000 AI Credits / mo",
+        capacity: 50000,
+        badge: "Recommended",
+        description: "For marketing teams ready to make every channel move faster.",
+        features: ["Unlimited team seats", "Custom brand voice AI model", "Priority queue + instant video", "Dedicated growth strategist"],
+      },
+    ];
+
+    const services = [
+      { title: "Q3 Omnichannel Launch Brief", type: "Full campaign", status: "In progress", progress: 78, updated: "2 hours ago", icon: "layers", accent: "lime" },
+      { title: "Social Creative Batch #4", type: "Multi-format assets", status: "Completed", progress: 100, updated: "Yesterday", icon: "sparkles", accent: "blue" },
+      { title: "AI Ad Copy Generator", type: "Automated service", status: "Ready to launch", progress: 0, updated: "3 days ago", icon: "wand-sparkles", accent: "orange" },
+    ];
+
+    const creditBreakdown = [
+      { label: "Copy generation", value: 4200, color: "bg-[#d1ff19]" },
+      { label: "Image synthesis", value: 2850, color: "bg-[#9ee51d]" },
+      { label: "Video rendering", value: 1400, color: "bg-[#5d9d25]" },
+    ];
+
+    function formatCredits(value) {
+      return new Intl.NumberFormat("en-US").format(value);
+    }
+
+    function App() {
+      const [activePlan, setActivePlan] = useState("growth-pro");
+      const [selectedPlan, setSelectedPlan] = useState("growth-pro");
+      const [isPlanModalOpen, setIsPlanModalOpen] = useState(false);
+      const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+      const [successMessage, setSuccessMessage] = useState("");
+
+      useEffect(() => {
+        lucide.createIcons();
+      });
+
+      const plan = plans.find((item) => item.id === activePlan) ?? plans[0];
+      const usedCredits = 8450;
+      const remainingCredits = plan.capacity - usedCredits;
+      const usagePercent = Math.round((usedCredits / plan.capacity) * 1000) / 10;
+      const selectedPlanDetails = plans.find((item) => item.id === selectedPlan) ?? plans[0];
+
+      const openPlanModal = () => {
+        setSelectedPlan(activePlan);
+        setIsPlanModalOpen(true);
+        setSuccessMessage("");
+      };
+
+      const confirmPlanChange = () => {
+        setActivePlan(selectedPlan);
+        setIsPlanModalOpen(false);
+        const message = `Plan successfully ${selectedPlan === "enterprise-scale" ? "upgraded" : "changed"} to ${selectedPlanDetails.name} for Independent!`;
+        setSuccessMessage(message);
+      };
+
+      return React.createElement(
+        "div",
+        { className: "edge-app min-h-screen bg-[#0b0d10] text-[#f3f4f6]" },
+        
+        // Header
+        React.createElement(
+          "header",
+          { className: "sticky top-0 z-30 border-b border-[#242933]/80 bg-[#0b0d10]/90 backdrop-blur-xl" },
+          React.createElement(
+            "div",
+            { className: "mx-auto flex max-w-[1440px] items-center justify-between px-5 py-4 sm:px-8" },
+            React.createElement(
+              "div",
+              { className: "flex items-center gap-10" },
+              React.createElement(
+                "a",
+                { href: "#overview", className: "group flex items-center gap-3 text-inherit no-underline" },
+                React.createElement(
+                  "span",
+                  { className: "grid size-8 place-items-center rounded-[10px] bg-[#d1ff19] text-[#0b0d10] shadow-[0_0_24px_rgba(209,255,25,.18)]" },
+                  React.createElement("i", { "data-lucide": "zap", className: "size-4 fill-current", strokeWidth: 2.5 })
+                ),
+                React.createElement(
+                  "span",
+                  null,
+                  React.createElement("span", { className: "block font-heading text-lg font-black tracking-[-0.08em]" }, "EDGE"),
+                  React.createElement("span", { className: "block text-[9px] font-semibold uppercase tracking-[0.2em] text-[#6b7280]" }, "AI marketing OS")
+                )
+              ),
+              React.createElement(
+                "nav",
+                { className: "hidden items-center gap-7 text-sm font-medium text-[#8f96a3] lg:flex" },
+                React.createElement("a", { href: "#overview", className: "nav-link-active" }, "Overview"),
+                React.createElement("a", { href: "#campaigns", className: "nav-link" }, "Campaigns"),
+                React.createElement("a", { href: "#services", className: "nav-link" }, "AI services"),
+                React.createElement("a", { href: "#insights", className: "nav-link" }, "Analytics")
+              )
+            ),
+            React.createElement(
+              "div",
+              { className: "flex items-center gap-3" },
+              React.createElement(
+                "button",
+                { type: "button", onClick: openPlanModal, className: "hidden rounded-lg bg-[#d1ff19] px-4 py-2.5 text-xs font-bold text-[#0b0d10] transition-all hover:bg-[#e2ff70] sm:inline-flex items-center cursor-pointer" },
+                "Manage plan ",
+                React.createElement("i", { "data-lucide": "arrow-up-right", className: "ml-2 size-3.5" })
+              ),
+              React.createElement(
+                "button",
+                { type: "button", onClick: () => setIsMobileNavOpen(!isMobileNavOpen), className: "grid size-10 place-items-center rounded-lg border border-[#242933] text-[#9ca3af] lg:hidden cursor-pointer" },
+                React.createElement("i", { "data-lucide": "menu", className: "size-5" })
+              ),
+              React.createElement(
+                "div",
+                { className: "hidden items-center gap-3 border-l border-[#242933] pl-4 sm:flex" },
+                React.createElement("div", { className: "grid size-9 place-items-center rounded-full bg-[#d1ff19] font-heading text-sm font-bold text-[#0b0d10]" }, "AS"),
+                React.createElement(
+                  "div",
+                  { className: "hidden xl:block" },
+                  React.createElement("p", { className: "text-xs font-semibold text-[#f3f4f6]" }, "Aryan Sansi"),
+                  React.createElement("p", { className: "mt-0.5 text-[10px] text-[#6b7280]" }, "Independent")
+                )
+              )
+            )
+          ),
+          isMobileNavOpen && React.createElement(
+            "div",
+            { className: "border-t border-[#242933] px-5 py-4 lg:hidden" },
+            React.createElement(
+              "div",
+              { className: "grid gap-3 text-sm text-[#b4bac5]" },
+              React.createElement("a", { href: "#overview", onClick: () => setIsMobileNavOpen(false) }, "Overview"),
+              React.createElement("a", { href: "#campaigns", onClick: () => setIsMobileNavOpen(false) }, "Campaigns"),
+              React.createElement("a", { href: "#services", onClick: () => setIsMobileNavOpen(false) }, "AI services"),
+              React.createElement(
+                "button",
+                { type: "button", className: "flex items-center justify-between border-t border-[#242933] pt-3 text-left text-[#d1ff19] bg-transparent cursor-pointer", onClick: openPlanModal },
+                "Manage plan ",
+                React.createElement("i", { "data-lucide": "arrow-up-right", className: "size-4" })
+              )
+            )
+          )
+        ),
+
+        // Main Content
+        React.createElement(
+          "main",
+          { id: "overview", className: "mx-auto max-w-[1440px] px-5 pb-16 pt-8 sm:px-8 sm:pt-12" },
+          
+          // Intro
+          React.createElement(
+            "section",
+            { className: "mb-9 flex flex-col justify-between gap-6 md:flex-row md:items-end" },
+            React.createElement(
+              "div",
+              null,
+              React.createElement(
+                "p",
+                { className: "mb-3 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.24em] text-[#d1ff19]" },
+                React.createElement("span", { className: "size-1.5 rounded-full bg-[#d1ff19] shadow-[0_0_8px_#d1ff19]" }),
+                " Monday, July 14, 2026"
+              ),
+              React.createElement(
+                "h1",
+                { className: "max-w-3xl font-heading text-4xl font-extrabold leading-[0.98] tracking-[-0.065em] text-[#f3f4f6] sm:text-5xl lg:text-6xl" },
+                "Good morning, Aryan.",
+                React.createElement("br"),
+                React.createElement("span", { className: "text-[#6b7280]" }, "Let's make something move.")
+              )
+            ),
+            React.createElement(
+              "div",
+              { className: "flex items-center gap-3 self-start md:self-end" },
+              React.createElement("button", { type: "button", className: "grid size-10 place-items-center rounded-full border border-[#242933] text-[#7e8795] cursor-pointer" }, React.createElement("i", { "data-lucide": "circle-help", className: "size-4" })),
+              React.createElement(
+                "button",
+                { type: "button", onClick: openPlanModal, className: "inline-flex items-center rounded-full border border-[#3a414d] px-4 py-2.5 text-xs font-bold text-[#f3f4f6] sm:hidden cursor-pointer" },
+                "Manage plan ",
+                React.createElement("i", { "data-lucide": "arrow-up-right", className: "ml-2 size-3.5" })
+              )
+            )
+          ),
+
+          // Success Message Banner
+          successMessage && React.createElement(
+            "div",
+            { className: "mb-6 flex items-center justify-between gap-4 rounded-xl border border-[#10b981]/35 bg-[#10b981]/10 px-4 py-3 text-sm text-[#b5f7d8]" },
+            React.createElement(
+              "span",
+              { className: "flex items-center gap-2" },
+              React.createElement("span", { className: "grid size-5 place-items-center rounded-full bg-[#10b981] text-[#0b0d10]" }, React.createElement("i", { "data-lucide": "check", className: "size-3.5", strokeWidth: 3 })),
+              successMessage
+            ),
+            React.createElement("button", { type: "button", onClick: () => setSuccessMessage(""), className: "text-[#7cd9ac] cursor-pointer bg-transparent border-0" }, React.createElement("i", { "data-lucide": "x", className: "size-4" }))
+          ),
+
+          // Summary & Usage Cards
+          React.createElement(
+            "section",
+            { className: "grid grid-cols-1 gap-5 lg:grid-cols-12" },
+            React.createElement(
+              "article",
+              { className: "edge-card relative overflow-hidden lg:col-span-5" },
+              React.createElement("div", { className: "absolute -right-20 -top-20 size-56 rounded-full bg-[#d1ff19]/4 blur-3xl" }),
+              React.createElement(
+                "div",
+                { className: "relative flex items-start justify-between" },
+                React.createElement(
+                  "div",
+                  null,
+                  React.createElement("p", { className: "section-kicker" }, "Account & plan overview"),
+                  React.createElement("h2", { className: "mt-3 font-heading text-2xl font-bold tracking-[-0.045em]" }, "Your workspace is", React.createElement("br"), React.createElement("span", { className: "text-[#d1ff19]" }, "ready to accelerate."))
+                ),
+                React.createElement("div", { className: "grid size-12 place-items-center rounded-2xl border border-[#d1ff19]/30 bg-[#d1ff19]/10 font-heading text-lg font-bold text-[#d1ff19]" }, "AS")
+              ),
+              React.createElement(
+                "div",
+                { className: "mt-8 flex items-center gap-3 border-t border-[#242933] pt-5" },
+                React.createElement(
+                  "div",
+                  null,
+                  React.createElement("p", { className: "text-sm font-bold text-[#f3f4f6]" }, "Aryan Sansi"),
+                  React.createElement("p", { className: "mt-1 text-xs text-[#7f8794]" }, "Freelancer · Independent")
+                ),
+                React.createElement("span", { className: "ml-auto rounded-full border border-[#10b981]/30 bg-[#10b981]/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[#63d99f]" }, "Active")
+              ),
+              React.createElement(
+                "div",
+                { className: "mt-5 flex items-end justify-between" },
+                React.createElement(
+                  "div",
+                  null,
+                  React.createElement("p", { className: "text-[10px] font-bold uppercase tracking-[0.18em] text-[#6b7280]" }, "Current plan"),
+                  React.createElement("p", { className: "mt-2 font-heading text-xl font-bold" }, plan.name),
+                  React.createElement("p", { className: "mt-1 text-xs text-[#7f8794]" }, plan.price + "/mo · Renews Aug 1, 2026")
+                ),
+                React.createElement(
+                  "button",
+                  { type: "button", onClick: openPlanModal, className: "inline-flex items-center text-xs font-bold text-[#d1ff19] bg-transparent border-0 cursor-pointer" },
+                  "Upgrade plan ",
+                  React.createElement("i", { "data-lucide": "arrow-up-right", className: "ml-1.5 size-3.5" })
+                )
+              )
+            ),
+            React.createElement(
+              "article",
+              { className: "edge-card lg:col-span-7" },
+              React.createElement(
+                "div",
+                { className: "flex flex-col justify-between gap-5 sm:flex-row sm:items-start" },
+                React.createElement(
+                  "div",
+                  null,
+                  React.createElement("p", { className: "section-kicker" }, "AI content credits"),
+                  React.createElement(
+                    "div",
+                    { className: "mt-3 flex items-baseline gap-2" },
+                    React.createElement("span", { className: "font-heading text-4xl font-extrabold tracking-[-0.06em]" }, formatCredits(Math.max(remainingCredits, 0))),
+                    React.createElement("span", { className: "text-sm text-[#6b7280]" }, "remaining")
+                  ),
+                  React.createElement("p", { className: "mt-1 text-xs text-[#7f8794]" }, "of " + formatCredits(plan.capacity) + " credits this month")
+                ),
+                React.createElement(
+                  "div",
+                  { className: "rounded-xl border border-[#242933] bg-[#0b0d10]/70 px-3 py-2 text-right" },
+                  React.createElement("p", { className: "text-[10px] font-bold uppercase tracking-wider text-[#6b7280]" }, "Usage"),
+                  React.createElement("p", { className: "mt-1 font-heading text-xl font-bold text-[#d1ff19]" }, usagePercent + "%")
+                )
+              ),
+              React.createElement(
+                "div",
+                { className: "mt-7" },
+                React.createElement(
+                  "div",
+                  { className: "mb-2 flex justify-between text-[10px] font-semibold uppercase tracking-wider text-[#6b7280]" },
+                  React.createElement("span", null, "Monthly usage"),
+                  React.createElement("span", null, formatCredits(usedCredits) + " used")
+                ),
+                React.createElement(
+                  "div",
+                  { className: "h-3 overflow-hidden rounded-full bg-[#242933]" },
+                  React.createElement("div", { className: "h-full rounded-full bg-[#d1ff19] shadow-[0_0_18px_rgba(209,255,25,.3)] transition-all duration-500", style: { width: Math.min(usagePercent, 100) + "%" } })
+                )
+              ),
+              React.createElement(
+                "div",
+                { className: "mt-7 grid grid-cols-3 gap-3 border-t border-[#242933] pt-5" },
+                creditBreakdown.map((item) =>
+                  React.createElement(
+                    "div",
+                    { key: item.label },
+                    React.createElement(
+                      "div",
+                      { className: "mb-2 flex items-center gap-1.5" },
+                      React.createElement("span", { className: `size-1.5 rounded-full ${item.color}` }),
+                      React.createElement("span", { className: "truncate text-[10px] font-semibold text-[#7f8794]" }, item.label)
+                    ),
+                    React.createElement("p", { className: "font-mono text-xs text-[#d4d7dc]" }, formatCredits(item.value))
+                  )
+                )
+              )
+            )
+          ),
+
+          // Next Action
+          React.createElement(
+            "section",
+            { id: "campaigns", className: "mt-14" },
+            React.createElement(
+              "div",
+              { className: "mb-5 flex items-end justify-between" },
+              React.createElement(
+                "div",
+                null,
+                React.createElement("p", { className: "section-kicker" }, "Recommended next action"),
+                React.createElement("h2", { className: "mt-2 font-heading text-2xl font-bold tracking-[-0.045em]" }, "Turn the launch brief into momentum.")
+              ),
+              React.createElement("span", { className: "hidden text-xs text-[#6b7280] sm:block" }, "Based on your workspace activity")
+            ),
+            React.createElement(
+              "div",
+              { className: "next-action-card" },
+              React.createElement("div", { className: "flex size-11 shrink-0 items-center justify-center rounded-xl bg-[#d1ff19] text-[#0b0d10]" }, React.createElement("i", { "data-lucide": "file-text", className: "size-5" })),
+              React.createElement(
+                "div",
+                { className: "min-w-0 flex-1" },
+                React.createElement("p", { className: "text-[10px] font-bold uppercase tracking-[0.18em] text-[#d1ff19]" }, "Q3 omnichannel launch brief"),
+                React.createElement("p", { className: "mt-1 truncate text-sm font-semibold text-[#f3f4f6]" }, "Your messaging framework is ready for final review.")
+              ),
+              React.createElement(
+                "button",
+                { type: "button", className: "hidden items-center rounded-lg border border-[#57611f] px-4 py-2.5 text-xs font-bold text-[#d1ff19] transition-all hover:bg-[#d1ff19] hover:text-[#0b0d10] sm:inline-flex cursor-pointer bg-transparent" },
+                "Review brief ",
+                React.createElement("i", { "data-lucide": "arrow-up-right", className: "ml-2 size-3.5" })
+              ),
+              React.createElement("button", { type: "button", className: "grid size-9 place-items-center rounded-lg border border-[#57611f] text-[#d1ff19] sm:hidden cursor-pointer bg-transparent" }, React.createElement("i", { "data-lucide": "chevron-right", className: "size-4" }))
+            )
+          ),
+
+          // Services
+          React.createElement(
+            "section",
+            { id: "services", className: "mt-14" },
+            React.createElement(
+              "div",
+              { className: "mb-5 flex items-end justify-between" },
+              React.createElement(
+                "div",
+                null,
+                React.createElement("p", { className: "section-kicker" }, "Workspace pulse"),
+                React.createElement("h2", { className: "mt-2 font-heading text-2xl font-bold tracking-[-0.045em]" }, "Active campaigns & AI services")
+              ),
+              React.createElement(
+                "button",
+                { type: "button", className: "hidden items-center text-xs font-bold text-[#8f96a3] transition-colors hover:text-[#d1ff19] sm:inline-flex bg-transparent border-0 cursor-pointer" },
+                "View all ",
+                React.createElement("i", { "data-lucide": "chevron-right", className: "ml-1 size-3.5" })
+              )
+            ),
+            React.createElement(
+              "div",
+              { className: "grid grid-cols-1 gap-5 md:grid-cols-3" },
+              services.map((service) =>
+                React.createElement(
+                  "article",
+                  { key: service.title, className: "edge-card group flex min-h-[245px] flex-col justify-between transition-transform duration-200 hover:-translate-y-1" },
+                  React.createElement(
+                    "div",
+                    null,
+                    React.createElement(
+                      "div",
+                      { className: "mb-7 flex items-start justify-between" },
+                      React.createElement("div", { className: `service-icon service-icon-${service.accent}` }, React.createElement("i", { "data-lucide": service.icon, className: "size-5" })),
+                      React.createElement("span", { className: `status-pill ${service.status === "Completed" ? "status-complete" : service.status === "Ready to launch" ? "status-ready" : "status-progress"}` }, service.status)
+                    ),
+                    React.createElement("p", { className: "text-[10px] font-bold uppercase tracking-[0.18em] text-[#6b7280]" }, service.type),
+                    React.createElement("h3", { className: "mt-2 font-heading text-lg font-bold leading-tight tracking-[-0.035em] text-[#f3f4f6]" }, service.title)
+                  ),
+                  React.createElement(
+                    "div",
+                    { className: "mt-7" },
+                    React.createElement(
+                      "div",
+                      { className: "mb-2 flex justify-between text-[10px] text-[#6b7280]" },
+                      React.createElement("span", null, "Last updated " + service.updated),
+                      React.createElement("span", { className: "font-mono text-[#b6bdc7]" }, service.progress ? service.progress + "%" : "—")
+                    ),
+                    React.createElement(
+                      "div",
+                      { className: "h-1 overflow-hidden rounded-full bg-[#242933]" },
+                      React.createElement("div", { className: `h-full rounded-full ${service.progress === 100 ? "bg-[#10b981]" : "bg-[#d1ff19]"}`, style: { width: (service.progress || 8) + "%" } })
+                    )
+                  )
+                )
+              )
+            )
+          ),
+
+          // Insights
+          React.createElement(
+            "section",
+            { id: "insights", className: "mt-14 grid gap-5 md:grid-cols-2" },
+            React.createElement(
+              "div",
+              { className: "edge-card flex items-center gap-4" },
+              React.createElement("div", { className: "grid size-11 shrink-0 place-items-center rounded-xl bg-[#242933] text-[#d1ff19]" }, React.createElement("i", { "data-lucide": "gauge", className: "size-5" })),
+              React.createElement(
+                "div",
+                null,
+                React.createElement("p", { className: "text-sm font-bold" }, "Creative velocity is up 24%"),
+                React.createElement("p", { className: "mt-1 text-xs text-[#7f8794]" }, "Your team shipped 18 more assets this month.")
+              ),
+              React.createElement("i", { "data-lucide": "arrow-up-right", className: "ml-auto size-4 text-[#d1ff19]" })
+            ),
+            React.createElement(
+              "div",
+              { className: "edge-card flex items-center gap-4" },
+              React.createElement("div", { className: "grid size-11 shrink-0 place-items-center rounded-xl bg-[#242933] text-[#7cb3ff]" }, React.createElement("i", { "data-lucide": "bar-chart-3", className: "size-5" })),
+              React.createElement(
+                "div",
+                null,
+                React.createElement("p", { className: "text-sm font-bold" }, "2 new audience insights"),
+                React.createElement("p", { className: "mt-1 text-xs text-[#7f8794]" }, "Ready to sharpen your next brief.")
+              ),
+              React.createElement("i", { "data-lucide": "arrow-up-right", className: "ml-auto size-4 text-[#7cb3ff]" })
+            )
+          )
+        ),
+
+        // Plan Modal
+        isPlanModalOpen && React.createElement(
+          "div",
+          { className: "fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-[#050608]/80 p-4 backdrop-blur-md" },
+          React.createElement(
+            "div",
+            { className: "modal-panel my-8 w-full max-w-3xl" },
+            React.createElement(
+              "div",
+              { className: "flex items-start justify-between gap-4" },
+              React.createElement(
+                "div",
+                null,
+                React.createElement("p", { className: "section-kicker" }, "Subscription settings"),
+                React.createElement("h2", { className: "mt-2 font-heading text-3xl font-extrabold tracking-[-0.055em]" }, "Manage your plan."),
+                React.createElement("p", { className: "mt-2 max-w-lg text-sm leading-relaxed text-[#8f96a3]" }, "Select the plan that matches Independent's next stage of growth.")
+              ),
+              React.createElement("button", { type: "button", onClick: () => setIsPlanModalOpen(false), className: "grid size-9 shrink-0 place-items-center rounded-full border border-[#242933] text-[#7f8794] cursor-pointer bg-transparent" }, React.createElement("i", { "data-lucide": "x", className: "size-4" }))
+            ),
+            React.createElement(
+              "div",
+              { className: "mt-8 grid gap-4 md:grid-cols-2" },
+              plans.map((item) => {
+                const isSelected = selectedPlan === item.id;
+                return React.createElement(
+                  "button",
+                  { type: "button", key: item.id, onClick: () => setSelectedPlan(item.id), className: `plan-option ${isSelected ? "plan-option-selected" : ""}` },
+                  React.createElement(
+                    "div",
+                    { className: "flex items-start justify-between gap-3 text-left" },
+                    React.createElement(
+                      "div",
+                      null,
+                      React.createElement("p", { className: "font-heading text-xl font-bold tracking-[-0.04em]" }, item.name),
+                      React.createElement("p", { className: "mt-1 text-xs text-[#7f8794]" }, item.description)
+                    ),
+                    React.createElement("span", { className: `plan-badge ${item.id === "enterprise-scale" ? "plan-badge-lime" : ""}` }, item.badge)
+                  ),
+                  React.createElement(
+                    "div",
+                    { className: "mt-6 flex items-end gap-2 text-left" },
+                    React.createElement("span", { className: "font-heading text-3xl font-extrabold tracking-[-0.06em]" }, item.price),
+                    React.createElement("span", { className: "pb-1 text-xs text-[#7f8794]" }, item.period)
+                  ),
+                  React.createElement("p", { className: "mt-1 text-left text-xs font-semibold text-[#d1ff19]" }, item.credits),
+                  React.createElement(
+                    "ul",
+                    { className: "mt-5 grid gap-2 border-t border-[#242933] pt-4 text-left text-xs text-[#aeb5bf]" },
+                    item.features.map((feature) =>
+                      React.createElement("li", { key: feature, className: "flex items-center gap-2" }, React.createElement("i", { "data-lucide": "check", className: "size-3.5 text-[#d1ff19]" }), feature)
+                    )
+                  ),
+                  React.createElement("span", { className: `plan-radio ${isSelected ? "plan-radio-selected" : ""}` }, isSelected && React.createElement("span", null))
+                );
+              })
+            ),
+            React.createElement(
+              "div",
+              { className: "mt-8 flex flex-col-reverse justify-between gap-3 border-t border-[#242933] pt-5 sm:flex-row sm:items-center" },
+              React.createElement("p", { className: "text-xs text-[#6b7280]" }, "Changes take effect immediately in this demo."),
+              React.createElement(
+                "div",
+                { className: "flex gap-3" },
+                React.createElement("button", { type: "button", onClick: () => setIsPlanModalOpen(false), className: "rounded-lg border border-[#303641] px-4 py-2.5 text-xs font-bold text-[#aeb5bf] bg-transparent cursor-pointer" }, "Cancel"),
+                React.createElement("button", { type: "button", onClick: confirmPlanChange, className: "rounded-lg bg-[#d1ff19] px-5 py-2.5 text-xs font-bold text-[#0b0d10] cursor-pointer" }, "Confirm " + (selectedPlan === activePlan ? "selection" : selectedPlan === "enterprise-scale" ? "upgrade" : "change"))
+              )
+            )
+          )
+        )
+      );
+    }
+
+    ReactDOM.render(React.createElement(App), document.getElementById("root"));
+  </script>
+</body>
+</html>
