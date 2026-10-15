@@ -10,7 +10,7 @@ EDGE is a responsive, static marketing operations dashboard for Aryan Sansi. It 
 - User selects Growth Pro or Enterprise Scale; the selected card receives a lime outline.
 - User confirms the selection; local UI state updates the plan, capacity, remaining credits, progress percentage, and summary, with an inline success banner and toast.
 
-## 🛠️ Technologies Used
+## Technologies Used
 
 * **HTML5 & CSS3:** Semantic layout, layout grid structure, and custom styling.
 * **Tailwind CSS v4:** Utility-first styling for dark mode themes, electric lime accents, dynamic progress bars, and modal overlays.
